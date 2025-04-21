@@ -1,5 +1,6 @@
 const { Schema, model } = require("mongoose");
 const { createHmac, randomBytes } = require("node:crypto");
+const { createTokenForUser } = require("../services/authentication");
 
 const userSchema = new Schema(
   {
@@ -38,7 +39,7 @@ userSchema.pre("save", function (next) {
 
   if (!user.isModified("password")) return;
 
-  const salt = "someRandomSalt";
+  const salt = randomBytes(16).toString();
   const hashedPassword = createHmac("sha256", salt)
     .update(user.password)
     .digest("hex");
@@ -49,24 +50,28 @@ userSchema.pre("save", function (next) {
   next();
 });
 
-userSchema.static("matchPassword", async function (email, password) {
-  const user = await this.findOne({ email });
-  if (!user) throw new Error("User not found!");
-  console.log(user);
+userSchema.static(
+  "matchPasswordAndGenerateToken",
+  async function (email, password) {
+    const user = await this.findOne({ email });
+    if (!user) throw new Error("User not found!");
+    // console.log(user);
 
-  const salt = user.salt;
-  const hashedPassword = user.password;
+    const salt = user.salt;
+    const hashedPassword = user.password;
 
-  const userProvidedHash = createHmac("sha256", salt)
-    .update(password)
-    .digest("hex");
+    const userProvidedHash = createHmac("sha256", salt)
+      .update(password)
+      .digest("hex");
 
-  if (hashedPassword !== userProvidedHash) {
-    throw new Error("Incorrect Password");
+    if (hashedPassword !== userProvidedHash) {
+      throw new Error("Incorrect Password");
+    }
+
+    const token = createTokenForUser(user);
+    return token;
   }
-
-  return { ...user, password: undefined, salt: undefined };
-});
+);
 
 const User = model("user", userSchema);
 
