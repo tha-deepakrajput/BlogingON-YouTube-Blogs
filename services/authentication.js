@@ -5,6 +5,7 @@ const secret = "$uperMan@123";
 // creating a jwt token :
 function createTokenForUser(user) {
   const payload = {
+    name: user.fullName,
     _id: user._id,
     email: user.email,
     profileImageURL: user.profileImageURL,

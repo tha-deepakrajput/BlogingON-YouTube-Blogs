@@ -11,7 +11,7 @@ const blogRoute = require("./routes/blog");
 const { checkForAuthenticationCookie } = require("./middlewares/authentication");
 
 const app = express();
-const PORT = 8000;
+const PORT = 10000;
 
 mongoose
   .connect("mongodb://localhost:27017/bloginon")
