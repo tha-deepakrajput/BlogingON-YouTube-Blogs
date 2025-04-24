@@ -19,6 +19,13 @@ const port = process.env.PORT || 10000;
 // MongoDb connection : 
 connectDB();
 
+console.log("Connecting to:", process.env.Mongo_URL); // Debug
+await mongoose.connect(process.env.Mongo_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+});
+
+
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
 
