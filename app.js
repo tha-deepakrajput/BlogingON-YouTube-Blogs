@@ -3,7 +3,7 @@ require("dotenv").config();
 const path = require("path");
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const ConnectDB = require("./config/DB");
+const mongoose = require("mongoose");
 
 const Blog = require("./models/blog");
 
@@ -16,7 +16,12 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 
 // MongoDb connection : 
-ConnectDB();
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("MongoDB connected"))
+.catch((err) => console.error("MongoDB connection error: ", err));
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
