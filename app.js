@@ -1,8 +1,9 @@
+require("dotenv").config();
+
 const path = require("path");
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const connectDB = require("./config/DB");
-const dotenv = require("dotenv");
+const ConnectDB = require("./config/DB");
 
 const Blog = require("./models/blog");
 
@@ -11,12 +12,11 @@ const blogRoute = require("./routes/blog");
 
 const { checkForAuthenticationCookie } = require("./middlewares/authentication");
 
-dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 // MongoDb connection : 
-connectDB();
+ConnectDB();
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
