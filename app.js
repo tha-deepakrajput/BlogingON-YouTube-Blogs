@@ -1,6 +1,5 @@
 const path = require("path");
 const express = require("express");
-const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/DB");
 const dotenv = require("dotenv");
@@ -14,17 +13,10 @@ const { checkForAuthenticationCookie } = require("./middlewares/authentication")
 
 dotenv.config();
 const app = express();
-const port = process.env.PORT || 10000;
+const PORT = process.env.PORT || 10000;
 
 // MongoDb connection : 
 connectDB();
-
-console.log("Connecting to:", process.env.Mongo_URL); // Debug
-await mongoose.connect(process.env.Mongo_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
 
 app.set("view engine", "ejs");
 app.set("views", path.resolve("./views"));
@@ -45,4 +37,4 @@ app.get("/", async (req, res) => {
 app.use("/user", userRoute);
 app.use("/blog", blogRoute);
 
-app.listen(port, () => console.log(`Server started at PORT : ${port}`));
+app.listen(PORT, () => console.log(`Server started at PORT : ${PORT}`));
